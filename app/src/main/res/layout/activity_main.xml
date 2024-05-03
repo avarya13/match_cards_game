@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Select Level"
+        android:textColor="#442836"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/difficultyRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioEasy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:clickable="true"
+            android:fontFamily="@font/inter_light"
+            android:onClick="onRadioButtonClicked"
+            android:textSize="20sp"
+            android:textColor="#725974"
+            android:textStyle="bold"
+            android:text="Easy"
+            android:layout_marginBottom="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:fontFamily="@font/inter_light"
+            android:onClick="onRadioButtonClicked"
+            android:textSize="20sp"
+            android:textColor="#725974"
+            android:textStyle="bold"
+            android:text="Medium"
+            android:layout_marginBottom="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioHard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:fontFamily="@font/inter_light"
+            android:onClick="onRadioButtonClicked"
+            android:textSize="20sp"
+            android:textColor="#725974"
+            android:textStyle="bold"
+            android:text="Hard"
+            android:layout_marginBottom="12dp" />
+        <RadioButton
+            android:id="@+id/radioVeryHard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:fontFamily="@font/inter_light"
+            android:onClick="onRadioButtonClicked"
+            android:textSize="20sp"
+            android:textColor="#725974"
+            android:textStyle="bold"
+            android:text="Very Hard"
+            android:layout_marginBottom="12dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/startGameButton"
+        android:width="180dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#964269"
+        android:fontFamily="@font/inter"
+        android:gravity="center"
+        android:text="Start Game"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.531"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.72" />
+</androidx.constraintlayout.widget.ConstraintLayout>
