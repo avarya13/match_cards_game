@@ -25,6 +25,8 @@ import com.example.match_cards_game.models.Game
 import com.example.match_cards_game.view.BoardAdapter
 import com.google.android.material.snackbar.Snackbar
 import androidx.fragment.app.FragmentManager
+import com.example.match_cards_game.models.GameTimer
+import com.example.match_cards_game.models.TimeLimits
 
 
 class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
@@ -44,6 +46,9 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
     private var timeElapsed = 0L
 
 
+    private lateinit var timeLimits: TimeLimits
+    private lateinit var timer: GameTimer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_game)
@@ -52,6 +57,12 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
         rvBoard = findViewById(R.id.recyclerView)
         tvNumMoves = findViewById(R.id.tvNumMoves)
         tvNumPairs = findViewById(R.id.tvNumPairs)
+
+        // Инициализация levelTimeLimits
+        timeLimits = TimeLimits()
+
+        // Создание экземпляра LevelTimeLimit для текущего уровня
+        timer = GameTimer(timeLimits, board)
 
         tvNumPairs.setTextColor(ContextCompat.getColor(this, R.color.color_progress_none))
 
@@ -78,7 +89,7 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
 
         val exitIcon: ImageView = findViewById(R.id.ivExit)
         exitIcon.setOnClickListener {
-            navigateToMainActivity()
+            exitRound()
             //showExitConfirmationDialog()
         }
 
@@ -91,7 +102,7 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
         builder.setMessage("Are you sure you want to exit the game?")
         builder.setPositiveButton("Yes") { dialog, which ->
             // Do something when "Yes" button is clicked
-            navigateToMainActivity() // Move this line inside the 'onClick' block
+            exitRound() // Move this line inside the 'onClick' block
         }
         builder.setNegativeButton("No") { dialog, which ->
             // Do nothing, dismiss the dialog
@@ -101,15 +112,16 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
     }
 
 
-
-
-    private fun navigateToMainActivity() {
+    private fun exitRound() {
         // Navigate back to the main screen (MainActivity)
         Toast.makeText(this, "Exiting the game...", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        startActivity(intent)
-        finish() // Finish the current activity to prevent returning to it on back press
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish() // Finish the current activity to prevent returning to it on back press
+        }, 2000)
+
     }
 
     private fun updateGameWithFlip(position: Int) {
@@ -124,7 +136,6 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
             // alert the user invalid move
             //Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_SHORT).show()
             Toast.makeText(this, "Invalid move!", Toast.LENGTH_SHORT).show()
-
             return
         }
         //actually flipping over card
@@ -154,51 +165,58 @@ class PlayGameActivity : ComponentActivity() { // : ComponentActivity()
     }
 
     private fun navigateToNextLevel() {
+        timer.stopTimer()
         // Определяем следующий уровень
         val nextLevel = board.getNextLevel()
         if (nextLevel != null) {
             val message = "Congratulations! You have unlocked the ${nextLevel.name.toLowerCase()} level."
-            //showNewLevelWarning(message) // Показываем предупреждение о новом уровне
+            // Показываем предупреждение о новом уровне
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             // Переход на новый уровень
             board = nextLevel
 
             // Переход на уровень
-            val intent = Intent(this, PlayGameActivity::class.java)
-            intent.putExtra("DIFFICULTY", nextLevel)
-            startActivity(intent)
-            finish() // Finish the current activity to prevent returning to it on back press
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(this, PlayGameActivity::class.java)
+                intent.putExtra("DIFFICULTY", nextLevel)
+                startActivity(intent)
+                finish()
+            }, 2000)// Finish the current activity to prevent returning to it on back press
         } else {
             // Handle the case where nextLevel is null
             // Можно добавить сообщение, что больше нет следующего уровня
             Toast.makeText(this, "You Won! Congratulations!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }, 2000)
         }
     }
-
-
-    private fun showNewLevelWarning(message: String) {
-        val snackbar = Snackbar.make(clRoot, message, Snackbar.LENGTH_LONG)
-        snackbar.show()
-    }
-
 
 
     private fun startTimer() {
-        countDownTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                timeElapsed += 1000
-                updateTimer(timeElapsed)
+        timer.startTimer(
+            { timeRemaining ->
+                updateTimer(timeRemaining)
+            },
+            {
+                handleGameEnd() // Обрабатываем проигрыш при истечении времени
             }
-
-            override fun onFinish() {
-                // Действия при завершении времени
-            }
-        }
-        countDownTimer?.start()
+        )
     }
+
+    private fun handleGameEnd() {
+        // Действия при завершении времени (проигрыш)
+        Toast.makeText(this, "Time's up! Game Over!", Toast.LENGTH_SHORT).show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 2000)
+    }
+
+
 
     private fun updateTimer(time: Long) {
         val minutes = (time / 60000).toInt()
