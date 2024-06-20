@@ -1,6 +1,23 @@
+
+
 plugins {
+   // kotlin("android") // Включаем основной плагин Kotlin для Android
+   // kotlin("kapt")
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+
+   // id("org.jetbrains.kotlin.kapt")
+   // id("kotlin-kapt")
+
+
+    //id("com.android.application")
+    //id("org.jetbrains.kotlin.android")
+    //id("kotlin.kapt")
+
+   // kotlin("kapt") version "2.0.0"
+   // id("org.jetbrains.kotlin.android")
+   // id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+   // id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -51,6 +68,12 @@ android {
 
 dependencies {
 
+    val room_version = "2.6.1"
+
+
+
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -65,7 +88,19 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
+
+
+    implementation("androidx.room:room-runtime:$room_version")
+
+   // kapt("androidx.room:room-compiler:$room_version")
+
+    implementation("androidx.room:room-ktx:$room_version")
+
+
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

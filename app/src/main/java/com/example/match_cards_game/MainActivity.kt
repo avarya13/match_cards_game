@@ -4,48 +4,30 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
 import com.example.match_cards_game.models.Board
 
-//
 class MainActivity : ComponentActivity() {
-    private lateinit var startGameButton: Button
-    private lateinit var difficultyRadioGroup: RadioGroup
-    private var selectedDifficulty: Board = Board.EASY
+    private lateinit var startGameButton: Button // Кнопка для начала игры
+    private var selectedDifficulty: Board = Board.EASY // По умолчанию выбран уровень сложности "Легкий"
 
+    // Метод, который вызывается при создании активности
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main) // Устанавливаем макет для этой активности
 
-        startGameButton = findViewById(R.id.startGameButton)
-        difficultyRadioGroup = findViewById(R.id.difficultyRadioGroup)
+        startGameButton = findViewById(R.id.startGameButton) // Инициализация кнопки для начала игры
 
+        // Установка слушателя для кнопки
         startGameButton.setOnClickListener {
-            startGame()
+            startGame() // Вызов метода startGame при нажатии на кнопку
         }
     }
 
+    // Метод для начала игры
     private fun startGame() {
-        val intent = Intent(this, PlayGameActivity::class.java)
-        intent.putExtra("DIFFICULTY", selectedDifficulty) // Передача выбранного уровня сложности
-        startActivity(intent)
-    }
-
-    fun onRadioButtonClicked(view: View) {
-        if (view is RadioButton) {
-            when (view.id) {
-                R.id.radioEasy -> selectedDifficulty = Board.EASY
-                R.id.radioMedium -> selectedDifficulty = Board.MEDIUM
-                R.id.radioHard -> selectedDifficulty = Board.HARD
-                R.id.radioVeryHard -> selectedDifficulty = Board.VERY_HARD
-            }
-
-            // После выбора уровня сложности, обновите игру
-            //startGame()
-        }
+        val intent = Intent(this, PlayGameActivity::class.java) // Создаем намерение для перехода к активности PlayGameActivity
+        intent.putExtra("DIFFICULTY", selectedDifficulty) // Передаем выбранный уровень сложности
+        startActivity(intent) // Запускаем новую активность
     }
 }
-
